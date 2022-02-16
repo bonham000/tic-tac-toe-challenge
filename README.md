@@ -4,24 +4,28 @@ We want to see how you code a game of Tic Tac Toe, so that we can get a feel for
 
 Acceptance criteria
 =======================
-* Application is a stand alone, static web page game of tic tac toe.
-* Computer (AI)  will never lose a game.
-* Application should be able to run based on HTML, CSS and Javascript.
-* Game will let player choose to be either X or O, computer will take other choice.
+* Your application should be a stand alone, static web page game of tic tac toe.
+* Your application should be able to run based on HTML, CSS and Javascript.
+* If your game requires a build step, ensure to include instructions in this file.
+* When the game starts, let player choose to be either X or O, computer will take other choice.
 * Game will let player go first.
+* After the game is over, a screen should be shown displaying who won.
+* Computer (AI) should never lose a game.
+* Complete submission must be received with 48 hours.
 
 Submission Tips
 ========================
-* Quality counts! A good submission that takes a while is better than a poor submission quickly. 
+* Quality counts! A good submission that takes a while is better than a poor submission quickly.
 * Make sure your submission accurately reflects your development style.
-* Commit early and often, with good messages.
-* Comments and Unit tests are appreciated but not required, if you know good practice, then show us.
+* Example of desired look of the game are provided in the `reference` directory
+* Images and fonts used in the reference images are available in the `assets` directory
+* Commit early and often, with good commit messages.
+* Comments and unit tests are appreciated but not required, if you know good practice, then show us.
 * Research the AI, there are multiple well known algorithms available, show us your implementation.
-* Plagarism will not be tolerated.
+* Plagiarism will not be tolerated.
 
 
 Submissions
 ---------------
 * Fork this repo and send us a pull request.
-* if you prefer you can send us a ZIP of your submission, due to email filters, rename the file to *.txt and mention it is a ZIP in your email.
 
