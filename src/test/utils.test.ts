@@ -53,7 +53,7 @@ describe("utils tests", () => {
           state = getNextGameState(state, getRandomMove(state.board)).unwrap();
 
           if (state.status === GameStatus.Playing) {
-            const computerMove = getComputerMove(state).unwrap();
+            const computerMove = getComputerMove(state);
             state = getNextGameState(state, computerMove).unwrap();
           }
         }

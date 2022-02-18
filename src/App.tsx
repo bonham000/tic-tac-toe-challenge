@@ -40,8 +40,9 @@ const App: React.FC = () => {
   const handleComputerMove = async (gameState: GameState) => {
     // Make it look like the computer is thinking...
     await wait(500);
+    // Compute next computer move and update game state
     const computerMove = getComputerMove(gameState);
-    const nextState = getNextGameState(gameState, computerMove.unwrap());
+    const nextState = getNextGameState(gameState, computerMove);
     matchResult(nextState, {
       ok: (x) => setGameState(x),
       err: (e) => toastError(e),
@@ -65,7 +66,7 @@ const App: React.FC = () => {
     // Compute the next game state result
     const nextGameState = getNextGameState(gameState, position);
     matchResult(nextGameState, {
-      ok: async (x) => {
+      ok: (x) => {
         // Update the game state
         setGameState(x);
 

@@ -182,9 +182,7 @@ const getScoredMove = (s: number): ScoredMove => ({
  * This functions runs the minimax algorithm to find the ideal move for the
  * computer player.
  */
-export const getComputerMove = (
-  gameState: GameState
-): Result<Position, string> => {
+export const getComputerMove = (gameState: GameState): Position => {
   const { board, humanPlayerSelection, nextPlayerToMove } = gameState;
   const humanIsX = humanPlayerSelection === Player.X;
 
@@ -258,7 +256,7 @@ export const getComputerMove = (
 
   // Find best move and return that position
   const result = minimax(board, nextPlayerToMove);
-  return Ok(result.position);
+  return result.position;
 };
 
 /**
