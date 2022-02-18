@@ -49,9 +49,13 @@ describe("utils tests", () => {
 
       while (current < testGameCount) {
         let state = getInitialGameState(humanPlayer);
+
+        // Continue until game exists the Playing status
         while (state.status === GameStatus.Playing) {
+          // Simulate player move
           state = getNextGameState(state, getRandomMove(state.board)).unwrap();
 
+          // Run computer move
           if (state.status === GameStatus.Playing) {
             const computerMove = getComputerMove(state);
             state = getNextGameState(state, computerMove).unwrap();
@@ -87,6 +91,8 @@ describe("utils tests", () => {
     };
 
     // Increase this number to increase the simulation count
+    // NOTE: Because the minimax solution is recursion heavy, this test
+    // takes a while to run for large test counts.
     const trials = 100;
     runGameSimulation(Player.X, trials);
     runGameSimulation(Player.O, trials);

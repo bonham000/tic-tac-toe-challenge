@@ -102,9 +102,10 @@ const App: React.FC = () => {
         handleMove={handleMoveRequest}
       />
       <GameSubText gameState={gameState} />
-      {gameState.status === GameStatus.PlayerSelection && (
-        <PlayerSelectionOverlay handleSelectPlayer={handleSelectPlayer} />
-      )}
+      <PlayerSelectionOverlay
+        gameState={gameState}
+        handleSelectPlayer={handleSelectPlayer}
+      />
       <GameFinishedOverlay gameState={gameState} restart={handleRestart} />
     </Container>
   );
@@ -249,22 +250,28 @@ const getTileContents = (tile: Tile) => {
 };
 
 interface PlayerSelectionOverlayProps {
+  gameState: GameState;
   handleSelectPlayer: (player: Player) => void;
 }
 
 const PlayerSelectionOverlay: React.FC<PlayerSelectionOverlayProps> = (
   props
 ) => {
-  return (
-    <SelectionOverlay>
-      <Select onClick={() => props.handleSelectPlayer(Player.X)}>
-        <X />
-      </Select>
-      <Select onClick={() => props.handleSelectPlayer(Player.O)}>
-        <O />
-      </Select>
-    </SelectionOverlay>
-  );
+  // Only visible during player selection game state
+  if (props.gameState.status === GameStatus.PlayerSelection) {
+    return (
+      <SelectionOverlay>
+        <Select onClick={() => props.handleSelectPlayer(Player.X)}>
+          <X />
+        </Select>
+        <Select onClick={() => props.handleSelectPlayer(Player.O)}>
+          <O />
+        </Select>
+      </SelectionOverlay>
+    );
+  } else {
+    return null;
+  }
 };
 
 interface GameFinishedOverlayProps {
