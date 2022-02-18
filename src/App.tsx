@@ -30,14 +30,6 @@ import { ReactComponent as O } from "./assets/player_o.svg";
  * ============================================================================
  */
 
-const toastSuccess = (msg: string) => {
-  return toast.success(<ToastText>{msg}</ToastText>);
-};
-
-const toastError = (msg: string) => {
-  return toast.error(<ToastText>{msg}</ToastText>);
-};
-
 const App: React.FC = () => {
   // Maintain all the game state in one state object
   const [gameState, setGameState] = useState(getDefaultGameState());
@@ -51,9 +43,7 @@ const App: React.FC = () => {
     const computerMove = getComputerMove(gameState);
     const nextState = getNextGameState(gameState, computerMove.unwrap());
     matchResult(nextState, {
-      ok: (x) => {
-        setGameState(x);
-      },
+      ok: (x) => setGameState(x),
       err: (e) => toastError(e),
     });
   };
@@ -191,9 +181,7 @@ interface GameBoardProps {
   handleMove: (position: Position) => void;
 }
 
-const GameBoardComponent: React.FC<GameBoardProps> = (
-  props: GameBoardProps
-) => {
+const GameBoardComponent: React.FC<GameBoardProps> = (props) => {
   return (
     <Board>
       {props.board.map((row, rowIndex) => {
@@ -286,10 +274,12 @@ interface GameFinishedOverlayProps {
 const GameFinishedOverlay: React.FC<GameFinishedOverlayProps> = (props) => {
   const { status } = props.gameState;
 
+  // Nothing happens if game is still in progress or hasn't started
   if (status === GameStatus.PlayerSelection || status === GameStatus.Playing) {
     return null;
   }
 
+  // Determine which side won
   let winner = "";
   if (status === GameStatus.XWins) {
     if (props.gameState.humanPlayerSelection === Player.X) {
@@ -379,6 +369,14 @@ const ToastText = styled.p`
   margin: 2px;
   font-family: Open_Sans_Condensed_Bold;
 `;
+
+const toastSuccess = (msg: string) => {
+  return toast.success(<ToastText>{msg}</ToastText>);
+};
+
+const toastError = (msg: string) => {
+  return toast.error(<ToastText>{msg}</ToastText>);
+};
 
 /** ===========================================================================
  * Export

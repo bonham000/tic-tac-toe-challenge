@@ -19,7 +19,7 @@ import {
 } from "./types";
 
 /**
- * Delay some time to avoid getting rate limited by the RPC node.
+ * Delay some time.
  */
 export const wait = async (time = 8000) => {
   await new Promise((_: any) => setTimeout(_, time));
@@ -190,10 +190,15 @@ export const getComputerMove = (
 
   // Minimax logic for Tic Tac Toe game
   const minimax = (board: GameBoard, player: Player): ScoredMove => {
-    // const b = copyGameBoard(board);
     const b = board;
     const gameStatus = getGameBoardStatus(b);
 
+    /**
+     * First handle final base cases in which a score is directly known.
+     *
+     * Then handle recursive cases of looking up the score for a move for
+     * each move, and then choosing the optimal move.
+     */
     switch (gameStatus) {
       // Positive scores are returned for computer winning outcomes
       // and negative scores are returned for human winning outcomes
@@ -208,16 +213,18 @@ export const getComputerMove = (
         const moves = [];
         // Iterate through the board and perform the algorithm logic for
         // each empty space
-        for (let y = 0; y < b.length; y++) {
-          for (let x = 0; x < b[y].length; x++) {
-            const tile = b[y][x];
+        for (let i = 0; i < b.length; i++) {
+          for (let j = 0; j < b[i].length; j++) {
+            const tile = b[i][j];
             if (isNoneVariant(tile)) {
-              const yPosition = validateTileIndex(y);
-              const xPosition = validateTileIndex(x);
-              const position: Position = [yPosition, xPosition];
-              b[yPosition][xPosition] = Some(player);
+              // Play on this tile and then get the best next move by
+              // recursively calling the minimax function again.
+              const y = validateTileIndex(i);
+              const x = validateTileIndex(j);
+              const position: Position = [y, x];
+              b[y][x] = Some(player);
               const move = minimax(b, getNextPlayer(player));
-              b[yPosition][xPosition] = None();
+              b[y][x] = None();
               moves.push({ score: move.score, position });
             }
           }

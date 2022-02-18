@@ -24,10 +24,10 @@ export type GameBoard = [Row, Row, Row];
  *   [_, X, _],
  * ]
  *
+ * Coordinates = (y, x)
+ * In the above 2D grid:
  * O is at (0, 2)
  * X is at (2, 1)
- *
- * Position type = (y, x)
  */
 const defaultBoard: GameBoard = [
   [None(), None(), None()],
@@ -35,6 +35,7 @@ const defaultBoard: GameBoard = [
   [None(), None(), None()],
 ];
 
+// Game Status enum - the game must be in one of these states at all times
 export enum GameStatus {
   PlayerSelection = "PlayerSelection",
   Playing = "Playing",
@@ -43,6 +44,8 @@ export enum GameStatus {
   OWins = "OWins",
 }
 
+// Primary state object, this includes all the relevant state for the game
+// at any point in time
 export interface GameState {
   board: GameBoard;
   status: GameStatus;
@@ -50,6 +53,9 @@ export interface GameState {
   humanPlayerSelection: Player;
 }
 
+/**
+ * Get the default game state (before player selection).
+ */
 export const getDefaultGameState = (): GameState => {
   return {
     board: defaultBoard,
@@ -59,13 +65,16 @@ export const getDefaultGameState = (): GameState => {
   };
 };
 
+/**
+ * Get initial game state once the player has selected their token.
+ */
 export const getInitialGameState = (
   humanPlayerSelection: Player
 ): GameState => {
   return {
     board: defaultBoard,
-    humanPlayerSelection,
     status: GameStatus.Playing,
+    humanPlayerSelection,
     nextPlayerToMove: humanPlayerSelection,
   };
 };

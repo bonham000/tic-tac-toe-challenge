@@ -11,14 +11,14 @@ export const assertUnreachable = (x: never): never => {
 };
 
 /** ===========================================================================
- * Extended Result Type
+ * Result Type
  * ----------------------------------------------------------------------------
- * This is a Result type loosely inspired by the Rust Result enum. Here,
- * it's specifically designed to model asynchronously fetched data which
- * can exist in one of three states: Loading | Error | Ok
+ * Below are TypeScript implementations of Rust's Result and Option types.
+ * Reference: https://learning-rust.github.io/docs/e3.option_and_result.html
  *
- * The types and helper functions below allow one to define Result objects
- * which must exist in one of the three states.
+ * The types here mimic the semantics of the same types in Rust. In particular,
+ * the match functions below let you match against these types with the same
+ * semantics of a Rust match expression.
  * ============================================================================
  */
 
