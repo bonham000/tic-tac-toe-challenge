@@ -357,9 +357,9 @@ const GameFinishedOverlay: React.FC<GameFinishedOverlayProps> = (props) => {
 };
 
 const SelectionOverlay = styled.div`
-  margin-top: 200px;
+  margin-top: 225px;
   width: 750px;
-  height: 450px;
+  height: 350px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -370,7 +370,7 @@ const SelectionOverlay = styled.div`
 `;
 
 const CompletionOverlay = styled.div`
-  margin-top: 200px;
+  margin-top: 225px;
   width: 650px;
   height: 450px;
   display: flex;
