@@ -3,6 +3,7 @@ import {
   Err,
   isNoneVariant,
   matchOption,
+  None,
   Ok,
   Result,
   Some,
@@ -63,20 +64,6 @@ export const getNextGameState = (
  */
 const copyGameBoard = (board: GameBoard) => {
   return board.slice().map((x) => x.slice()) as GameBoard;
-};
-
-/**
- * Simply toggle the player. X -> O. O -> X.
- */
-export const getNextPlayer = (player: Player) => {
-  switch (player) {
-    case Player.X:
-      return Player.O;
-    case Player.O:
-      return Player.X;
-    default:
-      return assertUnreachable(player);
-  }
 };
 
 /**
@@ -181,6 +168,15 @@ interface ScoredMove {
 }
 
 /**
+ * Helper to create a scored move. Note that the position is just a placeholder
+ * value and will be overwritten later.
+ */
+const getScoredMove = (s: number): ScoredMove => ({
+  score: s,
+  position: [0, 0],
+});
+
+/**
  * Handle Computer move.
  */
 export const getComputerMove = (
@@ -189,63 +185,77 @@ export const getComputerMove = (
   const { board, humanPlayerSelection, nextPlayerToMove } = gameState;
   const humanIsX = humanPlayerSelection === Player.X;
 
-  const score = (x: number): ScoredMove => ({ score: x, position: [0, 0] });
-
-  // Check for final game state and return a score
-  // If not final, iterate through the board and play every empty tile
-  // recursively to get a score.
-  // Choose the best move out of the scores.
+  // Minimax logic for Tic Tac Toe game
   const minimax = (board: GameBoard, player: Player): ScoredMove => {
     const b = copyGameBoard(board);
     const gameStatus = getGameBoardStatus(b);
 
     switch (gameStatus) {
       case GameStatus.XWins:
-        return humanIsX ? score(-10) : score(10);
+        return humanIsX ? getScoredMove(-10) : getScoredMove(10);
       case GameStatus.OWins:
-        return humanIsX ? score(10) : score(-10);
+        return humanIsX ? getScoredMove(10) : getScoredMove(-10);
       case GameStatus.Stalemate:
-        return score(0);
+        return getScoredMove(0);
       default: {
         const moves = [];
         for (let y = 0; y < b.length; y++) {
           for (let x = 0; x < b[y].length; x++) {
             const tile = b[y][x];
+            // Take actions for every empty space
             if (isNoneVariant(tile)) {
               const yPosition = validateTileIndex(y);
               const xPosition = validateTileIndex(x);
               const position: Position = [yPosition, xPosition];
               b[yPosition][xPosition] = Some(player);
               const move = minimax(b, getNextPlayer(player));
+              b[yPosition][xPosition] = None();
               moves.push({ score: move.score, position });
             }
           }
         }
 
-        let bestMove: ScoredMove = {
-          score: -Infinity,
-          position: [0, 0],
-        };
+        let optimalMove: ScoredMove = getScoredMove(0);
 
-        for (const move of moves) {
-          if (player !== humanPlayerSelection) {
-            if (move.score > bestMove.score) {
-              bestMove = move;
+        if (player !== humanPlayerSelection) {
+          // Computer: choose the highest scored move
+          optimalMove.score = -Infinity;
+          for (const move of moves) {
+            if (move.score > optimalMove.score) {
+              optimalMove = move;
             }
-          } else {
-            if (move.score < bestMove.score) {
-              bestMove = move;
+          }
+        } else {
+          // Human: choose the lowest scored move
+          optimalMove.score = Infinity;
+          for (const move of moves) {
+            if (move.score < optimalMove.score) {
+              optimalMove = move;
             }
           }
         }
 
-        return bestMove;
+        return optimalMove;
       }
     }
   };
 
   const result = minimax(board, nextPlayerToMove);
   return Ok(result.position);
+};
+
+/**
+ * Simply toggle the player. X -> O. O -> X.
+ */
+export const getNextPlayer = (player: Player) => {
+  switch (player) {
+    case Player.X:
+      return Player.O;
+    case Player.O:
+      return Player.X;
+    default:
+      return assertUnreachable(player);
+  }
 };
 
 /**

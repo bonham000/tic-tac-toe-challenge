@@ -13,7 +13,8 @@ import {
 } from "../tools/utils";
 
 describe("utils tests", () => {
-  test.skip("getNextGameState game logic", () => {
+  test("getNextGameState game logic", () => {
+    // Get a random number
     const randomNumber = (max: number) => {
       return Math.floor(Math.random() * max);
     };
@@ -36,24 +37,54 @@ describe("utils tests", () => {
       return openTiles[i];
     };
 
-    let current = 0;
-    let testGameCount = 100;
+    // Run a game simulation a given number of times
+    const runGameSimulation = (humanPlayer: Player, count: number) => {
+      let current = 0;
+      let testGameCount = count;
+      let stalemates = 0;
+      let computerVictories = 0;
 
-    while (current < testGameCount) {
-      let state = getInitialGameState(Player.X);
-      while (state.status === GameStatus.Playing) {
-        state = getNextGameState(state, getRandomMove(state.board)).unwrap();
+      while (current < testGameCount) {
+        let state = getInitialGameState(humanPlayer);
+        while (state.status === GameStatus.Playing) {
+          state = getNextGameState(state, getRandomMove(state.board)).unwrap();
 
-        if (state.status === GameStatus.Playing) {
-          const computerMove = getComputerMove(state).unwrap();
-          state = getNextGameState(state, computerMove).unwrap();
+          if (state.status === GameStatus.Playing) {
+            const computerMove = getComputerMove(state).unwrap();
+            state = getNextGameState(state, computerMove).unwrap();
+          }
         }
+
+        // Check for computer victories
+        if (humanPlayer === Player.X) {
+          if (state.status === GameStatus.OWins) {
+            computerVictories++;
+          }
+        } else {
+          if (state.status === GameStatus.XWins) {
+            computerVictories++;
+          }
+        }
+
+        // Check for stalemates
+        if (state.status === GameStatus.Stalemate) {
+          stalemates++;
+        }
+
+        current++;
       }
 
-      // O should always win... or Stalemate?
-      expect(state.status).toBe(GameStatus.OWins);
+      const validCases = computerVictories + stalemates;
+      console.log(
+        `- RESULTS: ${computerVictories} computer victories and ${stalemates} stalemates (total = ${validCases}).`
+      );
 
-      current++;
-    }
+      // Valid cases should equal the original test simulation count
+      expect(validCases).toBe(count);
+    };
+
+    const trials = 1000;
+    runGameSimulation(Player.X, trials);
+    runGameSimulation(Player.O, trials);
   });
 });
