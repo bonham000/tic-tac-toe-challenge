@@ -16,8 +16,10 @@
     format("truetype");
 }
 
-body {
+body,
+html {
   margin: 0;
+  padding: 0;
   font-family: Open_Sans_Condensed_Light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -24,7 +24,7 @@ export const getNextGameState = (
   state: GameState,
   position: Position
 ): Result<GameState, string> => {
-  const { board, status, nextPlayerToMove } = state;
+  const { board, status, nextPlayerToMove, humanPlayerSelection } = state;
 
   const [y, x] = position;
   const tile = board[y][x];
@@ -42,6 +42,7 @@ export const getNextGameState = (
         status,
         board: nextBoardState,
         nextPlayerToMove: nextPlayer,
+        humanPlayerSelection,
       });
     },
   });

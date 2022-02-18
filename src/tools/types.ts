@@ -47,12 +47,25 @@ export interface GameState {
   board: GameBoard;
   status: GameStatus;
   nextPlayerToMove: Player;
+  humanPlayerSelection: Player;
 }
 
-export const getDefaultGameState = (startingPlayer: Player): GameState => {
+export const getDefaultGameState = (): GameState => {
   return {
     board: defaultBoard,
     status: GameStatus.PlayerSelection,
-    nextPlayerToMove: startingPlayer,
+    humanPlayerSelection: Player.X,
+    nextPlayerToMove: Player.X,
+  };
+};
+
+export const getInitialGameState = (
+  humanPlayerSelection: Player
+): GameState => {
+  return {
+    board: defaultBoard,
+    humanPlayerSelection,
+    status: GameStatus.Playing,
+    nextPlayerToMove: humanPlayerSelection,
   };
 };

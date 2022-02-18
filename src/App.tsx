@@ -4,7 +4,9 @@ import toast from "react-hot-toast";
 import shortid from "shortid";
 import {
   GameBoard,
+  GameStatus,
   getDefaultGameState,
+  getInitialGameState,
   Player,
   Position,
   Tile,
@@ -26,7 +28,7 @@ import { ReactComponent as O } from "./assets/player_o.svg";
  */
 
 const App: React.FC = () => {
-  const [gameState, setGameState] = useState(getDefaultGameState(Player.X));
+  const [gameState, setGameState] = useState(getDefaultGameState());
 
   const handleMoveRequest = (position: Position) => {
     const nextGameState = getNextGameState(gameState, position);
@@ -36,14 +38,39 @@ const App: React.FC = () => {
     });
   };
 
+  const handleSelectPlayer = (player: Player) => {
+    const state = getInitialGameState(player);
+    setGameState(state);
+    toast.success(
+      <ToastText>You selected {player}. You move first!</ToastText>
+    );
+  };
+
   return (
     <Container>
       <Title>Tic Tack Toe</Title>
-      <SubTitle>Select Your Token</SubTitle>
+      {gameState.status === GameStatus.PlayerSelection ? (
+        <SubTitle>Select Your Token</SubTitle>
+      ) : (
+        <div style={{ height: 97 }} />
+      )}
       <GameBoardComponent
         board={gameState.board}
         handleMove={handleMoveRequest}
       />
+      {gameState.status === GameStatus.Playing &&
+      gameState.nextPlayerToMove === gameState.humanPlayerSelection ? (
+        <SubTitle>
+          Player's <span style={{ color: GRAY }}>Turn</span>
+        </SubTitle>
+      ) : (
+        <SubTitle>
+          Computer's <span style={{ color: GRAY }}>Turn...</span>
+        </SubTitle>
+      )}
+      {gameState.status === GameStatus.PlayerSelection && (
+        <PlayerSelectionOverlay handleSelectPlayer={handleSelectPlayer} />
+      )}
     </Container>
   );
 };
@@ -56,7 +83,7 @@ const App: React.FC = () => {
 const RED = "#fd6163";
 const GRAY = "#515151";
 
-const Container = styled.form`
+const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,7 +143,9 @@ const Board = styled.div`
   background: rgb(175, 175, 175);
 `;
 
-const BoardTile = styled.div`
+const BoardTile = styled.button`
+  outline: none;
+  border: none;
   width: 100px;
   height: 100px;
   display: flex;
@@ -145,6 +174,51 @@ const getTileContents = (tile: Tile) => {
     none: () => null,
   });
 };
+
+interface PlayerSelectionOverlayProps {
+  handleSelectPlayer: (player: Player) => void;
+}
+
+const PlayerSelectionOverlay: React.FC<PlayerSelectionOverlayProps> = (
+  props
+) => {
+  return (
+    <SelectionOverlay>
+      <Select onClick={() => props.handleSelectPlayer(Player.X)}>
+        <X />
+      </Select>
+      <Select onClick={() => props.handleSelectPlayer(Player.O)}>
+        <O />
+      </Select>
+    </SelectionOverlay>
+  );
+};
+
+const SelectionOverlay = styled.div`
+  margin-top: 125px;
+  width: 750px;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  z-index: 10;
+  position: absolute;
+  backdrop-filter: blur(4px);
+`;
+
+const Select = styled.button`
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ToastText = styled.p`
+  margin: 2px;
+  font-family: Open_Sans_Condensed_Bold;
+`;
 
 /** ===========================================================================
  * Export
