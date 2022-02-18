@@ -87,7 +87,7 @@ describe("utils tests", () => {
     };
 
     // Increase this number to increase the simulation count
-    const trials = 1000;
+    const trials = 100;
     runGameSimulation(Player.X, trials);
     runGameSimulation(Player.O, trials);
   });
