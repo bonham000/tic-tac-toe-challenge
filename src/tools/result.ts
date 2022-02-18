@@ -1,6 +1,6 @@
 /**
  * Assert a condition cannot occur. Used for writing exhaustive switch
- * blocks guarantee every value is handled.
+ * blocks which guarantee every value is handled.
  */
 export const assertUnreachable = (x: never): never => {
   throw new Error(
@@ -11,7 +11,7 @@ export const assertUnreachable = (x: never): never => {
 };
 
 /** ===========================================================================
- * Result Type
+ * Result & Option Types
  * ----------------------------------------------------------------------------
  * Below are TypeScript implementations of Rust's Result and Option types.
  * Reference: https://learning-rust.github.io/docs/e3.option_and_result.html
