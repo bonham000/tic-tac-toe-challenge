@@ -43,36 +43,6 @@ const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState());
 
   /**
-   * Check game status after a move occurs.
-   */
-  const handleCheckStatus = (gameState: GameState) => {
-    // Check the game state and take the next appropriate action
-    switch (gameState.status) {
-      case GameStatus.PlayerSelection:
-        break;
-      case GameStatus.Playing:
-      case GameStatus.Stalemate:
-        break;
-      case GameStatus.XWins:
-        if (gameState.humanPlayerSelection === Player.X) {
-          toastSuccess("X Wins! Good job!");
-        } else {
-          toastError("X Wins! You lost!");
-        }
-        break;
-      case GameStatus.OWins:
-        if (gameState.humanPlayerSelection === Player.O) {
-          toastSuccess("O Wins! Good job!");
-        } else {
-          toastError("O Wins! You lost!");
-        }
-        break;
-      default:
-        assertUnreachable(gameState.status);
-    }
-  };
-
-  /**
    * Handle making a computer move.
    */
   const handleComputerMove = async (gameState: GameState) => {
@@ -83,7 +53,6 @@ const App: React.FC = () => {
     matchResult(nextState, {
       ok: (x) => {
         setGameState(x);
-        handleCheckStatus(x);
       },
       err: (e) => toastError(e),
     });
@@ -113,9 +82,6 @@ const App: React.FC = () => {
         // If game is still playing let the computer move
         if (x.status === GameStatus.Playing) {
           handleComputerMove(x);
-        } else {
-          // Otherwise check game status
-          handleCheckStatus(x);
         }
       },
       err: (e) => toastError(e),
