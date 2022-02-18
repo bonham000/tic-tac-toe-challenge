@@ -6,6 +6,11 @@ import App from "./App";
 import { Toaster } from "react-hot-toast";
 import reportWebVitals from "./reportWebVitals";
 
+// Import fonts
+import "./assets/Open_Sans_Condensed/OpenSansCondensed-Bold.ttf";
+import "./assets/Open_Sans_Condensed/OpenSansCondensed-Light.ttf";
+import "./assets/Open_Sans_Condensed/OpenSansCondensed-LightItalic.ttf";
+
 /**
  * Render the app in an error boundary.
  */

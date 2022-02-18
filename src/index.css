@@ -1,8 +1,24 @@
+@font-face {
+  font-family: "Open_Sans_Condensed_Bold";
+  src: url("./assets/Open_Sans_Condensed/OpenSansCondensed-Bold.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Open_Sans_Condensed_Light";
+  src: url("./assets/Open_Sans_Condensed/OpenSansCondensed-Light.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Open_Sans_Condensed_Light_Italic";
+  src: url("./assets/Open_Sans_Condensed/OpenSansCondensed-LightItalic.ttf")
+    format("truetype");
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: Open_Sans_Condensed_Light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

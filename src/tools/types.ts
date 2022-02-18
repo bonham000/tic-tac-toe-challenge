@@ -36,7 +36,7 @@ const defaultBoard: GameBoard = [
 ];
 
 export enum GameStatus {
-  NotStarted = "NotStarted",
+  PlayerSelection = "PlayerSelection",
   Playing = "Playing",
   Stalemate = "Stalemate",
   XWins = "XWins",
@@ -52,7 +52,7 @@ export interface GameState {
 export const getDefaultGameState = (startingPlayer: Player): GameState => {
   return {
     board: defaultBoard,
-    status: GameStatus.NotStarted,
+    status: GameStatus.PlayerSelection,
     nextPlayerToMove: startingPlayer,
   };
 };

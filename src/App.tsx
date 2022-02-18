@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
 import shortid from "shortid";
@@ -15,6 +15,8 @@ import {
   validateTileIndex,
 } from "./tools/utils";
 import { matchOption, matchResult } from "./tools/result";
+import { ReactComponent as X } from "./assets/player_x.svg";
+import { ReactComponent as O } from "./assets/player_o.svg";
 
 /** ===========================================================================
  * Search Form Component
@@ -37,7 +39,7 @@ const App: React.FC = () => {
   return (
     <Container>
       <Title>Tic Tack Toe</Title>
-      <Title>Select Your Token</Title>
+      <SubTitle>Select Your Token</SubTitle>
       <GameBoardComponent
         board={gameState.board}
         handleMove={handleMoveRequest}
@@ -51,6 +53,9 @@ const App: React.FC = () => {
  * ============================================================================
  */
 
+const RED = "#fd6163";
+const GRAY = "#515151";
+
 const Container = styled.form`
   display: flex;
   align-items: center;
@@ -58,7 +63,17 @@ const Container = styled.form`
   flex-direction: column;
 `;
 
-const Title = styled.h1``;
+const Title = styled.h1`
+  font-size: 52px;
+  margin-top: 32px;
+  margin-bottom: 24px;
+  font-family: Open_Sans_Condensed_Light;
+`;
+
+const SubTitle = styled.h1`
+  margin-bottom: 32px;
+  color: ${RED};
+`;
 
 interface GameBoardProps {
   board: GameBoard;
@@ -91,21 +106,23 @@ const GameBoardComponent: React.FC<GameBoardProps> = (
 };
 
 const Board = styled.div`
+  padding: 5px;
   width: 325px;
   height: 325px;
   display: flex;
   flex-wrap: wrap;
-  align-items: space-around;
+  align-items: center;
   justify-content: space-around;
+  background: rgb(175, 175, 175);
 `;
 
 const BoardTile = styled.div`
   width: 100px;
   height: 100px;
-  border: 3px solid gray;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: white;
 
   &:hover {
     cursor: pointer;
@@ -118,9 +135,9 @@ const getTileContents = (tile: Tile) => {
     some: (player) => {
       switch (player) {
         case Player.X:
-          return "X";
+          return <X />;
         case Player.O:
-          return "O";
+          return <O />;
         default:
           return assertUnreachable(player);
       }
