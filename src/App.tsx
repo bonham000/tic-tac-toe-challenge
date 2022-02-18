@@ -25,7 +25,8 @@ import { ReactComponent as O } from "./assets/player_o.svg";
 /** ===========================================================================
  * Search Form Component
  * ----------------------------------------------------------------------------
- * This component renders the mint address input form.
+ * This component renders the main app UI and handles executing some
+ * high level game logic.
  * ============================================================================
  */
 
@@ -41,15 +42,51 @@ const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState());
 
   /**
+   * Check game status after a move occurs.
+   */
+  const handleCheckStatus = (gameState: GameState) => {
+    // Check the game state and take the next appropriate action
+    switch (gameState.status) {
+      case GameStatus.PlayerSelection:
+        break;
+      case GameStatus.Playing:
+        // Nothing to do...
+        break;
+      case GameStatus.Stalemate:
+        toastError("It was a stalemate!");
+        break;
+      case GameStatus.XWins:
+        if (gameState.humanPlayerSelection === Player.X) {
+          toastSuccess("X Wins! Good job!");
+        } else {
+          toastError("X Wins! You lost!");
+        }
+        break;
+      case GameStatus.OWins:
+        if (gameState.humanPlayerSelection === Player.O) {
+          toastSuccess("O Wins! Good job!");
+        } else {
+          toastError("O Wins! You lost!");
+        }
+        break;
+      default:
+        assertUnreachable(gameState.status);
+    }
+  };
+
+  /**
    * Handle making a computer move.
    */
   const handleComputerMove = async (gameState: GameState) => {
     // Make it look like the computer is thinking...
     await wait(500);
-    const computerMove = getComputerMove(gameState.board);
+    const computerMove = getComputerMove(gameState);
     const nextState = getNextGameState(gameState, computerMove.unwrap());
     matchResult(nextState, {
-      ok: (x) => setGameState(x),
+      ok: (x) => {
+        setGameState(x);
+        handleCheckStatus(x);
+      },
       err: (e) => toastError(e),
     });
   };
@@ -58,6 +95,11 @@ const App: React.FC = () => {
    * Handle making a player move.
    */
   const handleMoveRequest = (position: Position) => {
+    // Ensure game is currently playing
+    if (gameState.status !== GameStatus.Playing) {
+      return toastError("No game is active.");
+    }
+
     // Ensure it's the player's turn
     if (gameState.nextPlayerToMove !== gameState.humanPlayerSelection) {
       return toastError("It's not your turn.");
@@ -70,32 +112,12 @@ const App: React.FC = () => {
         // Update the game state
         setGameState(x);
 
-        // Check the game state and take the next appropriate action
-        switch (x.status) {
-          case GameStatus.PlayerSelection:
-            break;
-          case GameStatus.Playing:
-            handleComputerMove(x);
-            break;
-          case GameStatus.Stalemate:
-            toastError("It was a stalemate!");
-            break;
-          case GameStatus.XWins:
-            if (x.humanPlayerSelection === Player.X) {
-              toastSuccess("X Wins! Good job!");
-            } else {
-              toastError("X Wins! You lost!");
-            }
-            break;
-          case GameStatus.OWins:
-            if (x.humanPlayerSelection === Player.O) {
-              toastSuccess("O Wins! Good job!");
-            } else {
-              toastError("O Wins! You lost!");
-            }
-            break;
-          default:
-            assertUnreachable(x.status);
+        // If game is still playing let the computer move
+        if (x.status === GameStatus.Playing) {
+          handleComputerMove(x);
+        } else {
+          // Otherwise check game status
+          handleCheckStatus(x);
         }
       },
       err: (e) => toastError(e),

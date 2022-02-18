@@ -116,6 +116,7 @@ const getWinningPlayerFromRow = (row: Row) => {
 const getGameBoardStatus = (gameBoard: GameBoard): GameStatus => {
   const b = gameBoard;
 
+  // Check three rows
   let row: Row;
   row = [b[0][0], b[0][1], b[0][2]];
   if (isWinningRow(row)) {
@@ -132,6 +133,7 @@ const getGameBoardStatus = (gameBoard: GameBoard): GameStatus => {
     return getWinningPlayerFromRow(row);
   }
 
+  // Check three columns
   let column: Row;
   column = [b[0][0], b[1][0], b[2][0]];
   if (isWinningRow(column)) {
@@ -148,6 +150,7 @@ const getGameBoardStatus = (gameBoard: GameBoard): GameStatus => {
     return getWinningPlayerFromRow(column);
   }
 
+  // Check two diagonals
   let diagonal: Row;
   diagonal = [b[0][0], b[1][1], b[2][2]];
   if (isWinningRow(diagonal)) {
@@ -172,24 +175,77 @@ const getGameBoardStatus = (gameBoard: GameBoard): GameStatus => {
   return GameStatus.Stalemate;
 };
 
+interface ScoredMove {
+  score: number;
+  position: Position;
+}
+
 /**
  * Handle Computer move.
- *
- * TODO: Create computer AI game logic.
  */
-export const getComputerMove = (board: GameBoard): Result<Position, string> => {
-  for (let y = 0; y < board.length; y++) {
-    for (let x = 0; x < board[y].length; x++) {
-      const tile = board[y][x];
-      if (isNoneVariant(tile)) {
-        const yPosition = validateTileIndex(y);
-        const xPosition = validateTileIndex(x);
-        return Ok([yPosition, xPosition]);
+export const getComputerMove = (
+  gameState: GameState
+): Result<Position, string> => {
+  const { board, humanPlayerSelection, nextPlayerToMove } = gameState;
+  const humanIsX = humanPlayerSelection === Player.X;
+
+  const score = (x: number): ScoredMove => ({ score: x, position: [0, 0] });
+
+  // Check for final game state and return a score
+  // If not final, iterate through the board and play every empty tile
+  // recursively to get a score.
+  // Choose the best move out of the scores.
+  const minimax = (board: GameBoard, player: Player): ScoredMove => {
+    const b = copyGameBoard(board);
+    const gameStatus = getGameBoardStatus(b);
+
+    switch (gameStatus) {
+      case GameStatus.XWins:
+        return humanIsX ? score(-10) : score(10);
+      case GameStatus.OWins:
+        return humanIsX ? score(10) : score(-10);
+      case GameStatus.Stalemate:
+        return score(0);
+      default: {
+        const moves = [];
+        for (let y = 0; y < b.length; y++) {
+          for (let x = 0; x < b[y].length; x++) {
+            const tile = b[y][x];
+            if (isNoneVariant(tile)) {
+              const yPosition = validateTileIndex(y);
+              const xPosition = validateTileIndex(x);
+              const position: Position = [yPosition, xPosition];
+              b[yPosition][xPosition] = Some(player);
+              const move = minimax(b, getNextPlayer(player));
+              moves.push({ score: move.score, position });
+            }
+          }
+        }
+
+        let bestMove: ScoredMove = {
+          score: -Infinity,
+          position: [0, 0],
+        };
+
+        for (const move of moves) {
+          if (player !== humanPlayerSelection) {
+            if (move.score > bestMove.score) {
+              bestMove = move;
+            }
+          } else {
+            if (move.score < bestMove.score) {
+              bestMove = move;
+            }
+          }
+        }
+
+        return bestMove;
       }
     }
-  }
+  };
 
-  return Err("No computer move possible - this shouldn't happen.");
+  const result = minimax(board, nextPlayerToMove);
+  return Ok(result.position);
 };
 
 /**
