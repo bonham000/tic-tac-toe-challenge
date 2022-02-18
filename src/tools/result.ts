@@ -12,10 +12,7 @@ import { assertUnreachable } from "./utils";
  * ============================================================================
  */
 
-export type Result<T, E> =
-  | { ok: true; value: T }
-  | { ok: false; error: E }
-  | { ok: false; loading: true };
+export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
 export const Ok = <T>(value: T): Result<T, never> => ({
   ok: true,
@@ -27,15 +24,9 @@ export const Err = <E>(error: E): Result<never, E> => ({
   error,
 });
 
-export const ResultLoading = (): Result<never, never> => ({
-  ok: false,
-  loading: true,
-});
-
-export interface ResultMatcher<T, E, R1, R2, R3> {
+export interface ResultMatcher<T, E, R1, R2> {
   ok: (value: T) => R1;
   err: (error: E) => R2;
-  loading: () => R3;
 }
 
 /**
@@ -43,14 +34,11 @@ export interface ResultMatcher<T, E, R1, R2, R3> {
  * in Rust. Each potential variant (loading, error, ok) must be handled
  * when using this.
  */
-export const matchResult = <T, E, R1, R2, R3>(
+export const matchResult = <T, E, R1, R2>(
   x: Result<T, E>,
-  matcher: ResultMatcher<T, E, R1, R2, R3>
+  matcher: ResultMatcher<T, E, R1, R2>
 ) => {
-  if ("loading" in x) {
-    // Loading State
-    return matcher.loading();
-  } else if ("error" in x) {
+  if ("error" in x) {
     // Error State
     return matcher.err(x.error);
   } else if (x.ok === true) {

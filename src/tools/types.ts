@@ -15,6 +15,20 @@ export type Position = [TileIndex, TileIndex];
 
 export type GameBoard = [Row, Row, Row];
 
+/**
+ * How coordinates work:
+ *
+ * [
+ *   [_, _, O],
+ *   [_, _, _],
+ *   [_, X, _],
+ * ]
+ *
+ * O is at (0, 2)
+ * X is at (2, 1)
+ *
+ * Position type = (y, x)
+ */
 const defaultBoard: GameBoard = [
   [None(), None(), None()],
   [None(), None(), None()],

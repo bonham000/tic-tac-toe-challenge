@@ -1,4 +1,5 @@
-import { GameState, Player, Position, TileIndex } from "./types";
+import { Err, matchOption, Ok, Result, Some } from "./result";
+import { GameBoard, GameState, Player, Position, TileIndex } from "./types";
 
 /**
  * Assert a condition cannot occur. Used for writing exhaustive switch
@@ -12,16 +13,38 @@ export const assertUnreachable = (x: never): never => {
   );
 };
 
+const copyGameBoard = (board: GameBoard) => {
+  return board.slice().map((x) => x.slice()) as GameBoard;
+};
+
 /**
  * Given a board and a move request compute the next game state.
  */
 export const getNextGameState = (
   state: GameState,
   position: Position
-): GameState => {
-  return {
-    ...state,
-  };
+): Result<GameState, string> => {
+  const { board, status, nextPlayerToMove } = state;
+
+  const [y, x] = position;
+  const tile = board[y][x];
+  const nextBoardState = copyGameBoard(board);
+
+  return matchOption(tile, {
+    some: (_) => {
+      return Err("Tile is already occupied");
+    },
+    none: () => {
+      nextBoardState[y][x] = Some(nextPlayerToMove);
+      const nextPlayer = getNextPlayer(nextPlayerToMove);
+
+      return Ok({
+        status,
+        board: nextBoardState,
+        nextPlayerToMove: nextPlayer,
+      });
+    },
+  });
 };
 
 export const getNextPlayer = (player: Player) => {

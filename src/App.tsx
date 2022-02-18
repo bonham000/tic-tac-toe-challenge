@@ -14,7 +14,7 @@ import {
   getNextGameState,
   validateTileIndex,
 } from "./tools/utils";
-import { matchOption } from "./tools/result";
+import { matchOption, matchResult } from "./tools/result";
 
 /** ===========================================================================
  * Search Form Component
@@ -26,13 +26,12 @@ import { matchOption } from "./tools/result";
 const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState(Player.X));
 
-  useEffect(() => {
-    toast.success("HI");
-  }, []);
-
   const handleMoveRequest = (position: Position) => {
     const nextGameState = getNextGameState(gameState, position);
-    setGameState(nextGameState);
+    matchResult(nextGameState, {
+      ok: (x) => setGameState(x),
+      err: (e) => toast.error(e),
+    });
   };
 
   return (

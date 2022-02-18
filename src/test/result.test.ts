@@ -1,4 +1,4 @@
-import { Ok, Err, matchResult, ResultLoading } from "../tools/result";
+import { Ok, Err, matchResult } from "../tools/result";
 
 describe("Result Type", () => {
   const panic = () => {
@@ -17,7 +17,6 @@ describe("Result Type", () => {
     const result = matchResult(Ok(expected), {
       ok: (x) => x,
       err: panic,
-      loading: panic,
     });
 
     expect(result).toEqual(expected);
@@ -28,18 +27,6 @@ describe("Result Type", () => {
     const result = matchResult(Err(expected), {
       ok: panic,
       err: (e) => e,
-      loading: panic,
-    });
-
-    expect(result).toBe(expected);
-  });
-
-  test("matchResult loading variant", () => {
-    const expected = "Loading Variant";
-    const result = matchResult(ResultLoading(), {
-      ok: panic,
-      err: panic,
-      loading: () => expected,
     });
 
     expect(result).toBe(expected);
