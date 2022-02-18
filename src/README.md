@@ -1,6 +1,6 @@
 # tic-tac-toe-challenge
 
-Play Tic Tac Toe.
+Play Tic Tac Toe: [https://toe-tac-tic.surge.sh](https://toe-tac-tic.surge.sh/)
 
 **A few comments:**
 
