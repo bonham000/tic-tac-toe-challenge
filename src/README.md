@@ -2,7 +2,12 @@
 
 Play Tic Tac Toe.
 
-**NOTE:** I made slight changes to the repo structure, e.g. `assets` and `test` are now within the `src/` folder. This is because it's necessary for any code/assets to be within the `src/` folder in a standard React app.
+**A few comments:**
+
+- I made slight changes to the repo structure, e.g. `assets` and `test` are now within the `src/` folder. This is because it's necessary for any code/assets to be within the `src/` folder in a standard React app.
+- This app is not optimized for mobile.
+- I used custom TypeScript `Result` and `Option` types which are inspired by the Rust types of the same name. In some situations, this led to more verbose code, however I wanted to do this a) to get some more practice using these and b) because they do a great job of guaranteeing type safety.
+- The minimax algorithm is (I think) the most common/primary implementation, adapted here to work with the specific implementation of this Tic Tac Toe game.
 
 ## Project Structure
 
@@ -13,12 +18,11 @@ This is a React app bootstrapped with [Create React App](https://github.com/face
     ├── src                   # Main source folder
     │   ├── test              # Unit tests folder
     │   ├── tools             # Utils and helpers folder
-    │   ├── ui                # Folder for UI components
     │   └── App.tsx           # Main App file
     ├── package.json
     └── README
 
-## Local Development
+## Getting Started
 
 Clone the repo and run `yarn start`. These additional commands are also available:
 
@@ -36,7 +40,7 @@ $ yarn prettier
 $ yarn eslint
 
 # Run unit tests
-$ yarn test
+$ yarn test:unit
 
 # Run all checks
 $ yarn test:all
