@@ -1,4 +1,12 @@
-import { Err, isNoneVariant, matchOption, Ok, Result, Some } from "./result";
+import {
+  assertUnreachable,
+  Err,
+  isNoneVariant,
+  matchOption,
+  Ok,
+  Result,
+  Some,
+} from "./result";
 import {
   GameBoard,
   GameState,
@@ -8,18 +16,6 @@ import {
   Row,
   TileIndex,
 } from "./types";
-
-/**
- * Assert a condition cannot occur. Used for writing exhaustive switch
- * blocks guarantee every value is handled.
- */
-export const assertUnreachable = (x: never): never => {
-  throw new Error(
-    `assertUnreachable received a value which should not exist: ${JSON.stringify(
-      x
-    )}`
-  );
-};
 
 // Delay some time to avoid getting rate limited by the RPC node
 export const wait = async (time = 8000) => {
@@ -112,8 +108,6 @@ const getGameBoardStatus = (gameBoard: GameBoard): GameStatus => {
 
 /**
  * Given a board and a move request compute the next game state.
- *
- * TODO: Add logic to check for final game state.
  */
 export const getNextGameState = (
   state: GameState,

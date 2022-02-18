@@ -6,6 +6,6 @@ test("App renders without issue and displays header title", () => {
   render(<App />);
 
   // Check header title exists
-  const title = screen.getByText("Tic Tac Toe");
+  const title = screen.getByText("Tic Tack Toe");
   expect(title).toBeInTheDocument();
 });

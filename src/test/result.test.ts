@@ -1,4 +1,4 @@
-import { Ok, Err, matchResult } from "../tools/result";
+import { assertUnreachable, Ok, Err, matchResult } from "../tools/result";
 
 describe("Result Type", () => {
   const panic = () => {
@@ -6,6 +6,10 @@ describe("Result Type", () => {
       "matchResult matched a variant which should not be possible"
     );
   };
+
+  test("assertUnreachable", () => {
+    expect(() => assertUnreachable("hi" as never)).toThrow();
+  });
 
   test("matchResult ok variant", () => {
     const expected = {

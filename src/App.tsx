@@ -13,13 +13,12 @@ import {
   Tile,
 } from "./tools/types";
 import {
-  assertUnreachable,
   getComputerMove,
   getNextGameState,
   validateTileIndex,
   wait,
 } from "./tools/utils";
-import { matchOption, matchResult } from "./tools/result";
+import { assertUnreachable, matchOption, matchResult } from "./tools/result";
 import { ReactComponent as X } from "./assets/player_x.svg";
 import { ReactComponent as O } from "./assets/player_o.svg";
 
