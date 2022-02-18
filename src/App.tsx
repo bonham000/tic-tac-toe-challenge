@@ -30,16 +30,25 @@ import { ReactComponent as O } from "./assets/player_o.svg";
  * ============================================================================
  */
 
+const toastSuccess = (msg: string) => {
+  return toast.success(<ToastText>{msg}</ToastText>);
+};
+
+const toastError = (msg: string) => {
+  return toast.error(<ToastText>{msg}</ToastText>);
+};
+
 const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState());
 
   const handleComputerMove = async (gameState: GameState) => {
-    await wait(1000);
+    // Make it look like the computer is thinking...
+    await wait(500);
     const computerMove = getComputerMove(gameState.board);
     const nextState = getNextGameState(gameState, computerMove.unwrap());
     matchResult(nextState, {
       ok: (x) => setGameState(x),
-      err: (e) => toast.error(<ToastText>{e}</ToastText>),
+      err: (e) => toastError(e),
     });
   };
 
@@ -57,70 +66,51 @@ const App: React.FC = () => {
             handleComputerMove(x);
             break;
           case GameStatus.Stalemate:
-            toast.error(<ToastText>It was a stalemate!</ToastText>);
+            toastError("It was a stalemate!");
             break;
           case GameStatus.XWins:
             if (x.humanPlayerSelection === Player.X) {
-              toast.success(<ToastText>X Wins! Good job!</ToastText>);
+              toastSuccess("X Wins! Good job!");
             } else {
-              toast.error(<ToastText>X Wins! You lost!</ToastText>);
+              toastError("X Wins! You lost!");
             }
             break;
           case GameStatus.OWins:
             if (x.humanPlayerSelection === Player.O) {
-              toast.success(<ToastText>O Wins! Good job!</ToastText>);
+              toastSuccess("O Wins! Good job!");
             } else {
-              toast.error(<ToastText>O Wins! You lost!</ToastText>);
+              toastError("O Wins! You lost!");
             }
             break;
           default:
             assertUnreachable(x.status);
         }
       },
-      err: (e) => toast.error(<ToastText>{e}</ToastText>),
+      err: (e) => toastError(e),
     });
   };
 
   const handleSelectPlayer = (player: Player) => {
     const state = getInitialGameState(player);
     setGameState(state);
-    toast.success(
-      <ToastText>You selected {player}. You move first!</ToastText>
-    );
+    toastSuccess(`You selected ${player}. You move first!`);
   };
 
   return (
     <Container>
       <Title>Tic Tack Toe</Title>
-      {gameState.status === GameStatus.PlayerSelection ? (
-        <SubTitle>Select Your Token</SubTitle>
-      ) : (
-        <div style={{ height: 97 }} />
-      )}
+      <GameSubTitle gameState={gameState} />
       <GameBoardComponent
         board={gameState.board}
         handleMove={handleMoveRequest}
       />
-      {gameState.status === GameStatus.Playing &&
-      gameState.nextPlayerToMove === gameState.humanPlayerSelection ? (
-        <SubTitle>
-          Player's <span style={{ color: GRAY }}>Turn</span>
-        </SubTitle>
-      ) : (
-        <SubTitle>
-          Computer's <span style={{ color: GRAY }}>Turn...</span>
-        </SubTitle>
-      )}
+      <GameSubText gameState={gameState} />
       {gameState.status === GameStatus.PlayerSelection && (
         <PlayerSelectionOverlay handleSelectPlayer={handleSelectPlayer} />
       )}
     </Container>
   );
 };
-
-// const GameSubText: React.FC<{ gameState: GameState }> = (props) => {
-//   const { status } = props.gameState;
-// }
 
 /** ===========================================================================
  * Styles
@@ -148,6 +138,46 @@ const SubTitle = styled.h1`
   margin-bottom: 32px;
   color: ${RED};
 `;
+
+const GameSubTitle: React.FC<{ gameState: GameState }> = (props) => {
+  const { gameState } = props;
+  const { status } = gameState;
+  switch (status) {
+    case GameStatus.PlayerSelection:
+      return <SubTitle>Select Your Token</SubTitle>;
+    default:
+      return <div style={{ height: 97 }} />;
+  }
+};
+
+const GameSubText: React.FC<{ gameState: GameState }> = (props) => {
+  const { gameState } = props;
+  const { status } = gameState;
+  switch (status) {
+    case GameStatus.PlayerSelection:
+    case GameStatus.Stalemate:
+    case GameStatus.XWins:
+    case GameStatus.OWins:
+      return null;
+    case GameStatus.Playing: {
+      if (gameState.nextPlayerToMove === gameState.humanPlayerSelection) {
+        return (
+          <SubTitle>
+            Player's <span style={{ color: GRAY }}>Turn</span>
+          </SubTitle>
+        );
+      } else {
+        return (
+          <SubTitle>
+            Computer's <span style={{ color: GRAY }}>Turn...</span>
+          </SubTitle>
+        );
+      }
+    }
+    default:
+      return assertUnreachable(status);
+  }
+};
 
 interface GameBoardProps {
   board: GameBoard;
@@ -242,7 +272,7 @@ const PlayerSelectionOverlay: React.FC<PlayerSelectionOverlayProps> = (
 };
 
 const SelectionOverlay = styled.div`
-  margin-top: 125px;
+  margin-top: 200px;
   width: 750px;
   height: 350px;
   display: flex;
