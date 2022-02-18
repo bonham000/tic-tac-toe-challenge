@@ -359,7 +359,7 @@ const GameFinishedOverlay: React.FC<GameFinishedOverlayProps> = (props) => {
 const SelectionOverlay = styled.div`
   margin-top: 200px;
   width: 750px;
-  height: 350px;
+  height: 450px;
   display: flex;
   align-items: center;
   justify-content: space-between;

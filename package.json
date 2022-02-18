@@ -15,7 +15,7 @@
     "eslint": "eslint 'src/**/*.{ts,tsx}'",
     "eslint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "test:all": "yarn prettier && yarn eslint && yarn tsc && yarn test:unit",
-    "deploy": "yarn build && surge --project ./build --domain tic-tac-toe.surge.sh"
+    "deploy": "yarn build && surge --project ./build --domain toe-tac-tic.surge.sh"
   },
   "dependencies": {
     "@testing-library/jest-dom": "5.14.1",
