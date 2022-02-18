@@ -13,6 +13,9 @@ import {
 } from "../tools/utils";
 
 describe("utils tests", () => {
+  test.todo("getNextPlayer");
+  test.todo("validateTileIndex");
+
   test("getNextGameState game logic", () => {
     // Get a random number
     const randomNumber = (max: number) => {
@@ -83,6 +86,7 @@ describe("utils tests", () => {
       expect(validCases).toBe(count);
     };
 
+    // Increase this number to increase the simulation count
     const trials = 1000;
     runGameSimulation(Player.X, trials);
     runGameSimulation(Player.O, trials);

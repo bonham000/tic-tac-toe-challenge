@@ -39,6 +39,7 @@ const toastError = (msg: string) => {
 };
 
 const App: React.FC = () => {
+  // Maintain all the game state in one state object
   const [gameState, setGameState] = useState(getDefaultGameState());
 
   /**
@@ -50,10 +51,7 @@ const App: React.FC = () => {
       case GameStatus.PlayerSelection:
         break;
       case GameStatus.Playing:
-        // Nothing to do...
-        break;
       case GameStatus.Stalemate:
-        toastError("It was a stalemate!");
         break;
       case GameStatus.XWins:
         if (gameState.humanPlayerSelection === Player.X) {
@@ -133,6 +131,11 @@ const App: React.FC = () => {
     toastSuccess(`You selected ${player}. You move first!`);
   };
 
+  const handleRestart = () => {
+    setGameState(getDefaultGameState());
+    toastSuccess("Game restarted.");
+  };
+
   return (
     <Container>
       <Title>Tic Tack Toe</Title>
@@ -145,6 +148,7 @@ const App: React.FC = () => {
       {gameState.status === GameStatus.PlayerSelection && (
         <PlayerSelectionOverlay handleSelectPlayer={handleSelectPlayer} />
       )}
+      <GameFinishedOverlay gameState={gameState} restart={handleRestart} />
     </Container>
   );
 };
@@ -308,6 +312,50 @@ const PlayerSelectionOverlay: React.FC<PlayerSelectionOverlayProps> = (
   );
 };
 
+interface GameFinishedOverlayProps {
+  gameState: GameState;
+  restart: () => void;
+}
+
+const GameFinishedOverlay: React.FC<GameFinishedOverlayProps> = (props) => {
+  const { status } = props.gameState;
+
+  if (status === GameStatus.PlayerSelection || status === GameStatus.Playing) {
+    return null;
+  }
+
+  let winner = "";
+  if (status === GameStatus.XWins) {
+    if (props.gameState.humanPlayerSelection === Player.X) {
+      winner = "Player";
+    } else {
+      winner = "Computer";
+    }
+  } else if (status === GameStatus.OWins) {
+    if (props.gameState.humanPlayerSelection === Player.O) {
+      winner = "Player";
+    } else {
+      winner = "Computer";
+    }
+  } else if (status === GameStatus.Stalemate) {
+    return (
+      <CompletionOverlay>
+        <CompletionTitle>STALEMATE </CompletionTitle>
+        <RestartButton onClick={props.restart}>Play again?</RestartButton>
+      </CompletionOverlay>
+    );
+  }
+
+  return (
+    <CompletionOverlay>
+      <CompletionTitle>
+        {winner} <span style={{ color: GRAY }}>Wins</span>
+      </CompletionTitle>
+      <RestartButton onClick={props.restart}>Play again?</RestartButton>
+    </CompletionOverlay>
+  );
+};
+
 const SelectionOverlay = styled.div`
   margin-top: 200px;
   width: 750px;
@@ -321,12 +369,44 @@ const SelectionOverlay = styled.div`
   backdrop-filter: blur(4px);
 `;
 
+const CompletionOverlay = styled.div`
+  margin-top: 200px;
+  width: 650px;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 10;
+  position: absolute;
+  backdrop-filter: blur(6px);
+`;
+
+const CompletionTitle = styled.h1`
+  font-size: 100px;
+  margin: 24px;
+  color: ${RED};
+`;
+
 const Select = styled.button`
   width: 150px;
   height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const RestartButton = styled.button`
+  border: none;
+  font-size: 32px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgb(150, 150, 150);
+
+  &:hover {
+    cursor: pointer;
+    background: rgb(175, 175, 175);
+  }
 `;
 
 const ToastText = styled.p`

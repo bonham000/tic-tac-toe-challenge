@@ -178,6 +178,9 @@ const getScoredMove = (s: number): ScoredMove => ({
 
 /**
  * Handle Computer move.
+ *
+ * This functions runs the minimax algorithm to find the ideal move for the
+ * computer player.
  */
 export const getComputerMove = (
   gameState: GameState
@@ -187,22 +190,27 @@ export const getComputerMove = (
 
   // Minimax logic for Tic Tac Toe game
   const minimax = (board: GameBoard, player: Player): ScoredMove => {
-    const b = copyGameBoard(board);
+    // const b = copyGameBoard(board);
+    const b = board;
     const gameStatus = getGameBoardStatus(b);
 
     switch (gameStatus) {
+      // Positive scores are returned for computer winning outcomes
+      // and negative scores are returned for human winning outcomes
       case GameStatus.XWins:
         return humanIsX ? getScoredMove(-10) : getScoredMove(10);
       case GameStatus.OWins:
         return humanIsX ? getScoredMove(10) : getScoredMove(-10);
+      // Stalemate is neutral and receives a zero score
       case GameStatus.Stalemate:
         return getScoredMove(0);
       default: {
         const moves = [];
+        // Iterate through the board and perform the algorithm logic for
+        // each empty space
         for (let y = 0; y < b.length; y++) {
           for (let x = 0; x < b[y].length; x++) {
             const tile = b[y][x];
-            // Take actions for every empty space
             if (isNoneVariant(tile)) {
               const yPosition = validateTileIndex(y);
               const xPosition = validateTileIndex(x);
@@ -215,6 +223,7 @@ export const getComputerMove = (
           }
         }
 
+        // Find the best move out of all possible moves explored above
         let optimalMove: ScoredMove = getScoredMove(0);
 
         if (player !== humanPlayerSelection) {
@@ -240,6 +249,7 @@ export const getComputerMove = (
     }
   };
 
+  // Find best move and return that position
   const result = minimax(board, nextPlayerToMove);
   return Ok(result.position);
 };

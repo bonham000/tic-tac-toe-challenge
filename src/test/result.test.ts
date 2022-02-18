@@ -1,11 +1,13 @@
 import { assertUnreachable, Ok, Err, matchResult } from "../tools/result";
 
+// Error helper
+const panic = () => {
+  throw new Error("matchResult matched a variant which should not be possible");
+};
+
 describe("Result Type", () => {
-  const panic = () => {
-    throw new Error(
-      "matchResult matched a variant which should not be possible"
-    );
-  };
+  test.todo("matchOption some variant");
+  test.todo("matchOption none variant");
 
   test("assertUnreachable", () => {
     expect(() => assertUnreachable("hi" as never)).toThrow();
