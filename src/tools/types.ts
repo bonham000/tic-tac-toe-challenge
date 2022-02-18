@@ -7,7 +7,7 @@ export enum Player {
 
 export type Tile = Option<Player>;
 
-type Row = [Tile, Tile, Tile];
+export type Row = [Tile, Tile, Tile];
 
 export type TileIndex = 0 | 1 | 2;
 

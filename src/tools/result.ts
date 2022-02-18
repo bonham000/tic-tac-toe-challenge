@@ -61,15 +61,21 @@ export const matchResult = <T, E, R1, R2>(
  * ============================================================================
  */
 
-export type Option<T> = { some: true; value: T } | { some: false };
+export type Option<T> =
+  | { some: true; value: T; unwrap: () => T }
+  | { some: false; unwrap: () => never };
 
 export const Some = <T>(value: T): Option<T> => ({
   some: true,
   value,
+  unwrap: () => value,
 });
 
 export const None = (): Option<never> => ({
   some: false,
+  unwrap: () => {
+    throw new Error("Tried to unwrap an Option which was in the None state!");
+  },
 });
 
 export interface OptionMatcher<T, R1, R2> {

@@ -39,7 +39,7 @@ const App: React.FC = () => {
     const nextState = getNextGameState(gameState, computerMove.unwrap());
     matchResult(nextState, {
       ok: (x) => setGameState(x),
-      err: (e) => toast.error(e),
+      err: (e) => toast.error(<ToastText>{e}</ToastText>),
     });
   };
 
@@ -48,10 +48,36 @@ const App: React.FC = () => {
     matchResult(nextGameState, {
       ok: async (x) => {
         setGameState(x);
-        // TODO: Check for final state
-        handleComputerMove(x);
+
+        // Check the game state and take the next appropriate action
+        switch (x.status) {
+          case GameStatus.PlayerSelection:
+            break;
+          case GameStatus.Playing:
+            handleComputerMove(x);
+            break;
+          case GameStatus.Stalemate:
+            toast.error(<ToastText>It was a stalemate!</ToastText>);
+            break;
+          case GameStatus.XWins:
+            if (x.humanPlayerSelection === Player.X) {
+              toast.success(<ToastText>X Wins! Good job!</ToastText>);
+            } else {
+              toast.error(<ToastText>X Wins! You lost!</ToastText>);
+            }
+            break;
+          case GameStatus.OWins:
+            if (x.humanPlayerSelection === Player.O) {
+              toast.success(<ToastText>O Wins! Good job!</ToastText>);
+            } else {
+              toast.error(<ToastText>O Wins! You lost!</ToastText>);
+            }
+            break;
+          default:
+            assertUnreachable(x.status);
+        }
       },
-      err: (e) => toast.error(e),
+      err: (e) => toast.error(<ToastText>{e}</ToastText>),
     });
   };
 
@@ -91,6 +117,10 @@ const App: React.FC = () => {
     </Container>
   );
 };
+
+// const GameSubText: React.FC<{ gameState: GameState }> = (props) => {
+//   const { status } = props.gameState;
+// }
 
 /** ===========================================================================
  * Styles
