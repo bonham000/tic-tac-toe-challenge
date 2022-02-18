@@ -1,0 +1,15 @@
+{
+  "short_name": "Tic Tac Toe",
+  "name": "Tic Tac Toe",
+  "icons": [
+    {
+      "src": "tic-tac-toe.png",
+      "type": "image/png",
+      "sizes": "316x316"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

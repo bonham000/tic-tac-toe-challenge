@@ -1,31 +1,43 @@
 # tic-tac-toe-challenge
 
-We want to see how you code a game of Tic Tac Toe, so that we can get a feel for a candidate's skills and strengths.
+Play Tic Tac Toe.
 
-Acceptance criteria
-=======================
-* Your application should be a stand alone, static web page game of tic tac toe.
-* Your application should be able to run based on HTML, CSS and Javascript.
-* If your game requires a build step, ensure to include instructions in this file.
-* When the game starts, let player choose to be either X or O, computer will take other choice.
-* Game will let player go first.
-* After the game is over, a screen should be shown displaying who won.
-* Computer (AI) should never lose a game.
-* Complete submission must be received with 48 hours.
+NOTE: I made slight changes to the repo structure, e.g. `assets` and `test` are now within the `src/` folder. This is because it's necessary for any code/assets to be within the `src/` folder in a standard React app.
 
-Submission Tips
-========================
-* Quality counts! A good submission that takes a while is better than a poor submission quickly.
-* Make sure your submission accurately reflects your development style.
-* Example of desired look of the game are provided in the `reference` directory
-* Images and fonts used in the reference images are available in the `assets` directory
-* Commit early and often, with good commit messages.
-* Comments and unit tests are appreciated but not required, if you know good practice, then show us.
-* Research the AI, there are multiple well known algorithms available, show us your implementation.
-* Plagiarism will not be tolerated.
+## Project Structure
 
+This is a React app bootstrapped with [Create React App](https://github.com/facebook/create-react-app) written in TypeScript. It displays a web interface which allows you to play Tic Tac Toe against a computer player. The code is organized as a pretty standard React application:
 
-Submissions
----------------
-* Fork this repo and send us a pull request.
+    .
+    ├── ...                   # Other project config files/folders
+    ├── src                   # Main source folder
+    │   ├── test              # Unit tests folder
+    │   ├── tools             # Utils and helpers folder
+    │   ├── ui                # Folder for UI components
+    │   └── App.tsx           # Main App file
+    ├── package.json
+    └── README
 
+## Local Development
+
+Clone the repo and run `yarn start`. These additional commands are also available:
+
+```sh
+# Run an app build
+$ yarn build
+
+# Run TypeScript compiler
+$ yarn tsc
+
+# Run Prettier checks
+$ yarn prettier
+
+# Run ESLint checks
+$ yarn eslint
+
+# Run unit tests
+$ yarn test
+
+# Run all checks
+$ yarn test:all
+```
