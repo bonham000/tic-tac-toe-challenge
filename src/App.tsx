@@ -40,6 +40,9 @@ const toastError = (msg: string) => {
 const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState());
 
+  /**
+   * Handle making a computer move.
+   */
   const handleComputerMove = async (gameState: GameState) => {
     // Make it look like the computer is thinking...
     await wait(500);
@@ -51,10 +54,20 @@ const App: React.FC = () => {
     });
   };
 
+  /**
+   * Handle making a player move.
+   */
   const handleMoveRequest = (position: Position) => {
+    // Ensure it's the player's turn
+    if (gameState.nextPlayerToMove !== gameState.humanPlayerSelection) {
+      return toastError("It's not your turn.");
+    }
+
+    // Compute the next game state result
     const nextGameState = getNextGameState(gameState, position);
     matchResult(nextGameState, {
       ok: async (x) => {
+        // Update the game state
         setGameState(x);
 
         // Check the game state and take the next appropriate action
@@ -89,6 +102,9 @@ const App: React.FC = () => {
     });
   };
 
+  /**
+   * Handle initial player selection.
+   */
   const handleSelectPlayer = (player: Player) => {
     const state = getInitialGameState(player);
     setGameState(state);
@@ -112,7 +128,7 @@ const App: React.FC = () => {
 };
 
 /** ===========================================================================
- * Styles
+ * Styles & Components
  * ============================================================================
  */
 

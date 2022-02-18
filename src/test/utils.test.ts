@@ -13,7 +13,7 @@ import {
 } from "../tools/utils";
 
 describe("utils tests", () => {
-  test("getNextGameState game logic", () => {
+  test.skip("getNextGameState game logic", () => {
     const randomNumber = (max: number) => {
       return Math.floor(Math.random() * max);
     };
