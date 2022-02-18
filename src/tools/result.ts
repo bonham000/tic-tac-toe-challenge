@@ -12,16 +12,22 @@ import { assertUnreachable } from "./utils";
  * ============================================================================
  */
 
-export type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+export type Result<T, E> =
+  | { ok: true; value: T; unwrap: () => T }
+  | { ok: false; error: E; unwrap: () => never };
 
 export const Ok = <T>(value: T): Result<T, never> => ({
   ok: true,
   value,
+  unwrap: () => value,
 });
 
 export const Err = <E>(error: E): Result<never, E> => ({
   ok: false,
   error,
+  unwrap: () => {
+    throw new Error("Tried to unwrap a Result which was in the Err state!");
+  },
 });
 
 export interface ResultMatcher<T, E, R1, R2> {
@@ -85,4 +91,11 @@ export const matchOption = <T, R1, R2>(
   } else {
     return assertUnreachable(x);
   }
+};
+
+/**
+ * Check if an Option is a None variant.
+ */
+export const isNoneVariant = <T>(option: Option<T>): boolean => {
+  return option.some === false;
 };

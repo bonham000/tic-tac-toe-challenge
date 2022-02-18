@@ -1,4 +1,4 @@
-import { Err, matchOption, Ok, Result, Some } from "./result";
+import { Err, isNoneVariant, matchOption, Ok, Result, Some } from "./result";
 import { GameBoard, GameState, Player, Position, TileIndex } from "./types";
 
 /**
@@ -13,12 +13,19 @@ export const assertUnreachable = (x: never): never => {
   );
 };
 
+// Delay some time to avoid getting rate limited by the RPC node
+export const wait = async (time = 8000) => {
+  await new Promise((_: any) => setTimeout(_, time));
+};
+
 const copyGameBoard = (board: GameBoard) => {
   return board.slice().map((x) => x.slice()) as GameBoard;
 };
 
 /**
  * Given a board and a move request compute the next game state.
+ *
+ * TODO: Add logic to check for final game state.
  */
 export const getNextGameState = (
   state: GameState,
@@ -46,6 +53,26 @@ export const getNextGameState = (
       });
     },
   });
+};
+
+/**
+ * Handle Computer move.
+ *
+ * TODO: Create computer AI game logic.
+ */
+export const getComputerMove = (board: GameBoard): Result<Position, string> => {
+  for (let y = 0; y < board.length; y++) {
+    for (let x = 0; x < board[y].length; x++) {
+      const tile = board[y][x];
+      if (isNoneVariant(tile)) {
+        const yPosition = validateTileIndex(y);
+        const xPosition = validateTileIndex(x);
+        return Ok([yPosition, xPosition]);
+      }
+    }
+  }
+
+  return Err("No computer move possible - this shouldn't happen.");
 };
 
 export const getNextPlayer = (player: Player) => {

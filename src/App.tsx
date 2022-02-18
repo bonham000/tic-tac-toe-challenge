@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import shortid from "shortid";
 import {
   GameBoard,
+  GameState,
   GameStatus,
   getDefaultGameState,
   getInitialGameState,
@@ -13,8 +14,10 @@ import {
 } from "./tools/types";
 import {
   assertUnreachable,
+  getComputerMove,
   getNextGameState,
   validateTileIndex,
+  wait,
 } from "./tools/utils";
 import { matchOption, matchResult } from "./tools/result";
 import { ReactComponent as X } from "./assets/player_x.svg";
@@ -30,10 +33,24 @@ import { ReactComponent as O } from "./assets/player_o.svg";
 const App: React.FC = () => {
   const [gameState, setGameState] = useState(getDefaultGameState());
 
+  const handleComputerMove = async (gameState: GameState) => {
+    await wait(1000);
+    const computerMove = getComputerMove(gameState.board);
+    const nextState = getNextGameState(gameState, computerMove.unwrap());
+    matchResult(nextState, {
+      ok: (x) => setGameState(x),
+      err: (e) => toast.error(e),
+    });
+  };
+
   const handleMoveRequest = (position: Position) => {
     const nextGameState = getNextGameState(gameState, position);
     matchResult(nextGameState, {
-      ok: (x) => setGameState(x),
+      ok: async (x) => {
+        setGameState(x);
+        // TODO: Check for final state
+        handleComputerMove(x);
+      },
       err: (e) => toast.error(e),
     });
   };
